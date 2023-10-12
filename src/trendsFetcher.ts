@@ -2,9 +2,9 @@ import googleTrends from 'google-trends-api';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const DAYS_IN_PAST = 2;
+const DAYS_IN_PAST = 1;
 
-export default async function fetchAndProcessTrends() {
+export async function fetchAndProcessTrends() {
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(endDate.getDate() - DAYS_IN_PAST);
@@ -17,7 +17,9 @@ export default async function fetchAndProcessTrends() {
   sortTrendsByNewestArticle(uniqueTrendsData);
 
   console.log(
-    `Fetched data for ${uniqueTrendsData.length} unique trends from ${startDate} to ${endDate}}\n`
+    `Fetched data for ${
+      uniqueTrendsData.length
+    } unique trends from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}\n`
   );
 
   return uniqueTrendsData;
@@ -33,14 +35,23 @@ async function fetchTrendsForPeriod(startDate: Date, endDate: Date) {
   ) {
     try {
       const trends = await fetchDailyTrends(date);
+
       allTrendsData.push(...trends);
-      console.log(`Fetched ${trends.length} trends for date ${date}`);
+      console.log(
+        `Fetched ${trends.length} trends for date ${date.toLocaleDateString()}`
+      );
+
+      // Log all trend titles as they are fetched
+      console.log(`\nTrend titles fetched for ${date}: \n`);
+      trends.forEach((trend, index) => {
+        console.log(`${index + 1}. ${trend.title}`);
+      });
+
       await sleep(500);
     } catch (error) {
       console.error(`Failed to fetch trends for date ${date}: ${error}`);
     }
   }
-
   return allTrendsData;
 }
 
@@ -101,25 +112,25 @@ async function fetchDailyTrends(trendDate: Date) {
 
     return trendingSearches.map((trend) => ({
       title: trend.title.query,
-      traffic: trend.formattedTraffic,
+      // traffic: trend.formattedTraffic,
       relatedQueries: trend.relatedQueries.map((query) => ({
         query: query.query,
-        link: query.exploreLink,
+        // link: query.exploreLink,
       })),
-      image: {
-        newsUrl: trend.image.newsUrl,
-        source: trend.image.source,
-        imageUrl: trend.image.imageUrl,
-      },
+      // image: {
+      // newsUrl: trend.image.newsUrl,
+      // source: trend.image.source,
+      // imageUrl: trend.image.imageUrl,
+      // },
       articles: trend.articles.map((article) => ({
         title: article.title,
         timeAgo: article.timeAgo,
-        source: article.source,
-        imageUrl: article.image?.imageUrl,
+        // source: article.source,
+        // imageUrl: article.image?.imageUrl,
         articleUrl: article.url,
         snippet: article.snippet,
       })),
-      shareUrl: trend.shareUrl,
+      // shareUrl: trend.shareUrl,
     }));
   });
 

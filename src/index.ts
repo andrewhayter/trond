@@ -1,10 +1,12 @@
 // import fetchAndProcessNews from './newsFetcher';
-import fetchAndProcessTrends from './trendsFetcher';
+import { fetchAndProcessTrends } from './trendsFetcher';
 import { extractContentFromTrends } from './contentExtractor';
-import { analyzeSEO } from './contentAnalyzer';
+import { analyzeDocuments } from './contentAnalyzer';
 import fs from 'fs';
 
 async function main() {
+  console.time('Total time');
+
   // Fetch and process trends data
   const trends = await fetchAndProcessTrends();
   fs.writeFileSync('data/trends.json', JSON.stringify(trends, null, 2));
@@ -21,7 +23,8 @@ async function main() {
   );
 
   // // Analyze content and SEO signals from content of trend data
-  const trendsWithContentAndAnalysis = await analyzeSEO(trendsWithContent);
+  const trendsWithContentAndAnalysis =
+    await analyzeDocuments(trendsWithContent);
   fs.writeFileSync(
     'data/trendsWithContentAndAnalysis.json',
     JSON.stringify(trendsWithContentAndAnalysis, null, 2)
@@ -29,6 +32,8 @@ async function main() {
   console.log(
     'Trends with content and analysis data has been written to data/trendsWithContentAndAnalysis.json\n'
   );
+
+  console.timeEnd('Total time');
 }
 
 main();
