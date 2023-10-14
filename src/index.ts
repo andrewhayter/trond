@@ -1,11 +1,11 @@
-// import fetchAndProcessNews from './newsFetcher';
 import { fetchAndProcessTrends } from './trendsFetcher';
 import { extractContentFromTrends } from './contentExtractor';
 import { analyzeDocuments } from './contentAnalyzer';
+import { processTrends } from './langchain';
 import fs from 'fs';
 
 async function main() {
-  console.time('Total time');
+  console.time('Total time: ');
 
   // Fetch and process trends data
   const trends = await fetchAndProcessTrends();
@@ -22,7 +22,7 @@ async function main() {
     'Trends with content data has been written to data/trendsWithContent.json\n'
   );
 
-  // // Analyze content and SEO signals from content of trend data
+  // Analyze content and SEO signals from content of trend data
   const trendsWithContentAndAnalysis =
     await analyzeDocuments(trendsWithContent);
   fs.writeFileSync(
@@ -33,7 +33,17 @@ async function main() {
     'Trends with content and analysis data has been written to data/trendsWithContentAndAnalysis.json\n'
   );
 
-  console.timeEnd('Total time');
+  // Process the trends data with the utility function from langchain.ts
+  const trendsWithSummaries = await processTrends(trendsWithContentAndAnalysis);
+  fs.writeFileSync(
+    'data/trendsWithSummaries.json',
+    JSON.stringify(trendsWithSummaries, null, 2)
+  );
+  console.log(
+    'Trends with summaries data has been written to data/trendsWithSummaries.json\n'
+  );
+
+  console.timeEnd('Total time: ');
 }
 
 main();
