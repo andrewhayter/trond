@@ -1,105 +1,86 @@
 // src/langchain.ts
-import { OpenAI } from 'langchain/llms/openai';
-import { loadSummarizationChain } from 'langchain/chains';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { SimpleSequentialChain, LLMChain } from 'langchain/chains';
+import { Ollama } from 'langchain/llms/ollama';
 import { PromptTemplate } from 'langchain/prompts';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import 'dotenv/config';
 require('dotenv').config();
 
+// This is an LLMChain to analyze an article and create an outline.
+const llmOutline = new Ollama({
+  baseUrl: 'http://localhost:11434',
+  model: 'mistral',
+});
+const outlineTemplate = `Given the article, it is your job to analyze it and create an outline.
+ 
+  Article: {article}
+  Analysis: This is an outline for the above article:`;
+const outlinePromptTemplate = new PromptTemplate({
+  template: outlineTemplate,
+  inputVariables: ['article'],
+});
+const outlineChain = new LLMChain({
+  llm: llmOutline,
+  prompt: outlinePromptTemplate,
+});
+
+// This is an LLMChain to write an article given an outline.
+const llmArticle = new Ollama({
+  baseUrl: 'http://localhost:11434',
+  model: 'mistral',
+});
+const articleTemplate = `Given the outline of an article, it is your job to write the article.
+ 
+  Outline:
+  {outline}
+  Article:`;
+const articlePromptTemplate = new PromptTemplate({
+  template: articleTemplate,
+  inputVariables: ['outline'],
+});
+const articleChain = new LLMChain({
+  llm: llmArticle,
+  prompt: articlePromptTemplate,
+});
+
+const overallChain = new SimpleSequentialChain({
+  chains: [outlineChain, articleChain],
+  verbose: true,
+});
+
 export async function processTrends(trendsWithContentAndAnalysis) {
   try {
-    // Initialize the LLM to use to answer the question.
-    const model = new OpenAI({
-      modelName: 'gpt-3.5-turbo-16k',
-      temperature: 0.7,
-    });
-
-    // Create prompt templates
-    const summaryTemplate = `
-      You are an expert in summarizing articles.
-      Your goal is to create a summary of an article.
-      Below you find the text of an article:
-      --------
-      {text}
-      --------
-      The text of the article will also be used as the basis for a question and answer bot.
-      Provide some examples questions and answers that could be asked about the article. Make these questions very specific.
-      Total output will be a summary of the article and a list of example questions the user could ask of the article.
-      SUMMARY AND QUESTIONS:
-    `;
-    const SUMMARY_PROMPT = PromptTemplate.fromTemplate(summaryTemplate);
-
-    const summaryRefineTemplate = `
-      You are an expert in summarizing articles.
-      Your goal is to create a summary of an article.
-      We have provided an existing summary up to a certain point: {existing_answer}
-      Below you find the text of an article:
-      --------
-      {text}
-      --------
-      Given the new context, refine the summary and example questions.
-      The text of the article will also be used as the basis for a question and answer bot.
-      Provide some examples questions and answers that could be asked about the article. Make
-      these questions very specific.
-      If the context isn't useful, return the original summary and questions.
-      Total output will be a summary of the article and a list of example questions the user could ask of the article.
-      SUMMARY AND QUESTIONS:
-    `;
-    const SUMMARY_REFINE_PROMPT = PromptTemplate.fromTemplate(
-      summaryRefineTemplate
-    );
-
-    const summaries = [];
+    const articles = [];
 
     for (const trend of trendsWithContentAndAnalysis) {
       console.log(`Processing ${trend.title}...`);
       console.log(`Processing ${trend.articles.length} articles...`);
 
+      // Skip trends with no articles
+      if (trend.articles.length === 0) {
+        continue;
+      }
+
+      // Create a text splitter
       const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 10000,
-        chunkOverlap: 250,
+        chunkSize: 7500,
       });
 
-      // Concatenate all articles related to a topic into a single string
-      let allArticlesText = '';
-      for (const article of trend.articles) {
-        allArticlesText += `
-          TITLE: ${article.title} 
-          DESCRIPTION: ${article.description}
-          ${article.datePublished ? `DATE: ${article.datePublished}` : ''}
-          CONTENT: ${article.content}
-        `;
-      }
+      // Concatenate all articles' content into a single string
+      const allArticlesContent = trend.articles
+        .map((article) => article.content)
+        .join('\n\n');
 
-      // Create a Document object
-      const articleDocs = await textSplitter.createDocuments([allArticlesText]);
-      console.log(
-        'After splitting documents, before loading summarization chain'
-      );
+      const docs = await textSplitter.createDocuments([allArticlesContent]);
 
-      // Create a chain that uses a refine chain.
-      const chain = loadSummarizationChain(model, {
-        type: 'refine',
-        verbose: true,
-        questionPrompt: SUMMARY_PROMPT,
-        refinePrompt: SUMMARY_REFINE_PROMPT,
-      });
+      const outline = await outlineChain.run(docs[0]);
+      const finalArticle = await articleChain.run(outline);
 
-      console.log(`After loading summarization chain, before running chain\n`);
-
-      // Process each chunk with the model
-      for (const doc of articleDocs) {
-        console.log(`Processing document: ${JSON.stringify(doc)}\n`);
-
-        const summary = await chain.call({
-          input_documents: [doc],
-        });
-        console.log(`Generated summary: ${summary}\n`);
-        summaries.push(summary);
-      }
+      articles.push(finalArticle);
     }
 
-    return summaries;
+    console.log(`Articles: ${JSON.stringify(articles)}\n`);
+    return articles;
   } catch (error) {
     console.error(`An error occurred while processing trends: ${error}`);
     return [];
