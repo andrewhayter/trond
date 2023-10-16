@@ -104,13 +104,12 @@ const overallChain = new SimpleSequentialChain({
 
 export async function processTrends(trendsWithContentAndAnalysis) {
   try {
-    
+
     const articles = [];
 
     for (const trend of trendsWithContentAndAnalysis) {
       // Skip trends with no articles
       if (trend.articles.length === 0) continue;
-      
 
       console.log(`Processing ${trend.title}...`);
       console.log(`Processing ${trend.articles.length} articles...`);
@@ -126,10 +125,19 @@ export async function processTrends(trendsWithContentAndAnalysis) {
         .map((article) => article.content)
         .join('\n\n');
 
+      console.log(`All articles content: ${allArticlesContent}`);
+
       const docs = await textSplitter.createDocuments([allArticlesContent]);
 
+      console.log(`Docs: ${JSON.stringify(docs)}`);
+
       const outline = await outlineChain.run(docs);
+
+      console.log(`Outline: ${JSON.stringify(outline)}`);
+
       const finalArticle = await articleChain.run(outline);
+
+      console.log(`Final article: ${JSON.stringify(finalArticle)}`);
 
       articles.push(finalArticle);
     }
