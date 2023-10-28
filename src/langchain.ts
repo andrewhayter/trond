@@ -1,8 +1,7 @@
 // src/langchain.ts
-import { SimpleSequentialChain, LLMChain } from 'langchain/chains';
+import { SequentialChain, LLMChain } from 'langchain/chains';
 import { Ollama } from 'langchain/llms/ollama';
 import { PromptTemplate } from 'langchain/prompts';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import 'dotenv/config';
 require('dotenv').config();
 
@@ -10,10 +9,11 @@ require('dotenv').config();
 const llmOutline = new Ollama({
   baseUrl: 'http://localhost:11434',
   model: 'mistral',
+  temperature: 0.1,
 });
 
 const outlineTemplate = `
-Given a list of articles, it is your job to analyze them, provide the latest news first, then add more context about the topic to create an outline.
+Given a list of articles about {topic}, it is your job to analyze them, provide the latest news first that we have provided in the article(s) below, then add more context about the topic to create an outline.
 
   Article: {article}
 
@@ -43,36 +43,38 @@ Given a list of articles, it is your job to analyze them, provide the latest new
 
 const outlinePromptTemplate = new PromptTemplate({
   template: outlineTemplate,
-  inputVariables: ['article'],
+  inputVariables: ['article', 'topic'],
 });
 const outlineChain = new LLMChain({
   llm: llmOutline,
   prompt: outlinePromptTemplate,
+  outputKey: "outline",
 });
 
 // This is an LLMChain to write an article given an outline.
 const llmArticle = new Ollama({
   baseUrl: 'http://localhost:11434',
   model: 'mistral',
+  temperature: 0.5,
 });
 const articleTemplate = `
-Given the outline of an article, it is your job to craft a well-structured, SEO-optimized long-form article, ensuring to cover the latest news first before delving into broader context.
+Given the outline of an article about {topic}, it is your job to craft a well-structured, SEO-optimized long-form article, ensuring to cover the latest news first before delving into broader context.
 
   Outline:
   {outline}
   
   Article:
-  Title: [Provide a catchy and SEO-friendly title]
+  Title: [Provide a catchy and SEO-friendly title about {topic}]
 
   Introduction:
     - Engagement Hook: [Start with an engaging hook]
-    - Latest News Highlight: [Highlight the latest news regarding the topic]
+    - Latest News Highlight: [Highlight the latest news regarding {topic}]
     - Broader Context: [Briefly introduce the broader topic or issue]
 
   Body:
-    - Subheading 1: Delving into the Details
+    - Subheading 1: Delving into the latest news Detail about {topic}
         - [Provide a deeper analysis of the latest news]
-    - Subheading 2: Historical Background
+    - Subheading 2: Historical Background about  {topic}
         - [Discuss the historical or background information of the topic]
     - Subheading 3: Implications and Insights
         - [Discuss the implications of the news and provide actionable insights]
@@ -90,15 +92,17 @@ Given the outline of an article, it is your job to craft a well-structured, SEO-
 
 const articlePromptTemplate = new PromptTemplate({
   template: articleTemplate,
-  inputVariables: ['outline'],
+  inputVariables: ['outline', 'topic'],
 });
 const articleChain = new LLMChain({
   llm: llmArticle,
   prompt: articlePromptTemplate,
+  outputKey: "generated_article",
 });
 
-const overallChain = new SimpleSequentialChain({
+const overallChain = new SequentialChain({
   chains: [outlineChain, articleChain],
+  inputVariables: ['article', 'topic'],
   verbose: true,
 });
 
@@ -110,35 +114,23 @@ export async function processTrends(trendsWithContentAndAnalysis) {
     for (const trend of trendsWithContentAndAnalysis) {
       // Skip trends with no articles
       if (trend.articles.length === 0) continue;
-
-      console.log(`Processing ${trend.title}...`);
-      console.log(`Processing ${trend.articles.length} articles...`);
-
-      // Create a text splitter
-      const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 5000,
-        chunkOverlap: 300,
-      });
+      console.log(`Processing ${trend.articles.length} articles about... ${trend.title}\n`);
 
       // Concatenate all articles' content into a single string
       const allArticlesContent = trend.articles
-        .map((article) => article.content)
+        .map((article) => {
+          return `\n\n${article.title}\n ${article.datePublished ? `(Published: ${article.datePublished})` : ''} \n${article.content}`
+        })
         .join('\n\n');
 
       console.log(`All articles content: ${allArticlesContent}`);
-
-      const docs = await textSplitter.createDocuments([allArticlesContent]);
-
-      console.log(`Docs: ${JSON.stringify(docs)}`);
-
-      const outline = await outlineChain.run(docs);
-
-      console.log(`Outline: ${JSON.stringify(outline)}`);
-
-      const finalArticle = await articleChain.run(outline);
+      const finalArticle = await overallChain.call({
+        article: allArticlesContent,
+        topic: trend.title,
+        ...(trend.relatedTopics && { related_topics: trend.relatedTopics }),
+      });
 
       console.log(`Final article: ${JSON.stringify(finalArticle)}`);
-
       articles.push(finalArticle);
     }
 

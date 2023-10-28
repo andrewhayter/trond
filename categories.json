@@ -1,0 +1,261 @@
+{
+  "Home & Garden": {
+    "Appliances & Vacuums": ["Dishwasher", "Vacuum Cleaner", "Washing Machine"],
+    "Bathroom": ["Shower Curtain", "Toothbrush Holder", "Bath Mat"],
+    "Cleaning": ["Mop", "Cleaning Detergent", "Disinfectant Wipes"],
+    "Garden & Outdoors": ["Lawn Mower", "Garden Hose", "Bird Feeder"],
+    "Heating, Cooling, & Air Quality": [
+      "Air Conditioner",
+      "Heater",
+      "Air Purifier"
+    ],
+    "Home & Decor": ["Sofa", "Picture Frame", "Area Rug"],
+    "Moving": ["Moving Boxes", "Packing Tape", "Moving Van Rental"],
+    "Office": ["Office Chair", "Desk", "File Cabinet"],
+    "Sleep": ["Mattress", "Pillow", "Blanket"],
+    "Kitchen": {
+      "Cooking & Baking": ["Oven", "Mixing Bowl", "Baking Sheet"],
+      "Coffee & Drinks": ["Coffee Maker", "Tea Kettle", "Wine Glasses"],
+      "Grilling": ["Grill", "Charcoal", "Grill Tools"],
+      "Supplies": ["Cutlery", "Plates", "Cookware Set"]
+    }
+  },
+  "Food & Grocery": {
+    "Produce": ["Fruits", "Vegetables", "Herbs"],
+    "Dairy": ["Milk", "Cheese", "Yogurt"],
+    "Bakery": ["Bread", "Pastries", "Cookies"],
+    "Meat & Seafood": ["Chicken", "Beef", "Fish"],
+    "Pantry": ["Canned Goods", "Pasta", "Spices"]
+  },
+  "Health & Leisure": {
+    "Fitness": ["Yoga Mat", "Dumbbells", "Treadmill"],
+    "Health": ["Vitamins", "First Aid Kit", "Prescription Medication"],
+    "Outdoors": ["Tent", "Hiking Boots", "Camping Gear"],
+    "Hobbies": ["Knitting", "Painting", "Photography"],
+    "Gaming": ["Video Games", "Gaming Console", "Gaming Chair"],
+    "Travel": ["Luggage", "Travel Guides", "Travel Insurance"],
+    "Pets": ["Pet Food", "Pet Bed", "Pet Toys"]
+  },
+  "Tech": {
+    "Electronics": ["TV", "Headphones", "Smart Speaker"],
+    "Phones, Tablets, & Smartwatches": ["Smartphone", "Tablet", "Smartwatch"],
+    "Computers": ["Laptop", "Desktop", "Printer"],
+    "Audio": ["Speakers", "Microphone", "Soundbar"],
+    "Video": ["Camera", "Camcorder", "Drone"],
+    "Smart Home": ["Smart Thermostat", "Smart Lock", "Smart Light Bulbs"],
+    "Cameras": ["DSLR Camera", "Mirrorless Camera", "Action Camera"]
+  },
+  "Baby & Kid": {
+    "Bath & Diapering": ["Baby Bath", "Diapers", "Baby Wipes"],
+    "Pregnancy & Nursing": ["Pregnancy Pillow", "Nursing Bra", "Baby Monitor"],
+    "Clothing": ["Baby Onesies", "Toddler Clothes", "Kids’ Shoes"],
+    "Gear & Furniture": ["Crib", "Stroller", "High Chair"],
+    "Safety": ["Baby Gate", "Baby Monitor", "Car Seat"],
+    "School": ["Backpack", "Lunchbox", "School Supplies"],
+    "Toys": ["Action Figures", "Board Games", "Dolls"],
+    "Travel": ["Diaper Bag", "Portable Crib", "Car Seat Travel Bag"]
+  },
+  "Style": {
+    "Apparel": ["Dresses", "Jeans", "T-Shirts"],
+    "Shoes": ["Sneakers", "Boots", "Sandals"],
+    "Accessories": ["Watches", "Jewelry", "Handbags"]
+  },
+  "Gifts": {
+    "Gifts for Grown-Ups": ["Books", "Cookware", "Subscription Box"],
+    "Gifts for Kids": ["Toys", "Games", "Books"],
+    "Gifts for Friends": ["Gift Cards", "Personalized Gifts", "Home Decor"],
+    "Gifts for Partner": ["Jewelry", "Tech Gadgets", "Experience Gifts"],
+    "Gifts for Wife": ["Spa Day", "Jewelry", "Cooking Class"],
+    "Gifts for Husband": ["Tools", "Sports Equipment", "Gaming Console"],
+    "Gifts for Parents": ["Photo Album", "Garden Tools", "Cookbook"],
+    "Gifts for Office": ["Desk Accessories", "Coffee Mug", "Office Plants"],
+    "Gifts for Secret Santa": ["Candles", "Gift Cards", "Holiday Decorations"]
+  },
+  "Deals": ["Daily Deals", "Seasonal Sales", "Coupons"],
+  "Entertainment": {
+    "Movies & TV Shows": ["Streaming Services", "DVDs", "Movie Tickets"],
+    "Music": ["Concert Tickets", "Music Streaming", "Musical Instruments"],
+    "Books": ["Fiction", "Non-Fiction", "Audiobooks"],
+    "Events & Concerts": ["Live Music", "Theater", "Sports Events"],
+    "Celebrity News": ["Gossip", "Interviews", "Award Shows"]
+  },
+  "Sports": {
+    "Team Sports": ["Basketball", "Football", "Soccer"],
+    "Individual Sports": ["Tennis", "Golf", "Swimming"],
+    "Outdoor Sports": ["Hiking", "Camping", "Fishing"],
+    "Sports Gear": ["Athletic Wear", "Sports Equipment", "Footwear"],
+    "Sports News": ["Scores", "Player Updates", "Trades"]
+  },
+  "Finance": {
+    "Personal Finance": ["Budgeting", "Savings", "Credit Cards"],
+    "Investing": ["Stocks", "Bonds", "Mutual Funds"],
+    "Banking": ["Checking Account", "Savings Account", "Online Banking"],
+    "Insurance": ["Health Insurance", "Car Insurance", "Life Insurance"],
+    "Real Estate": ["Buying", "Selling", "Renting"]
+  },
+  "Automotive": {
+    "Cars": ["New Cars", "Used Cars", "Car Reviews"],
+    "Motorcycles": ["New Motorcycles", "Used Motorcycles", "Motorcycle Gear"],
+    "Automotive News": ["Industry News", "Recalls", "Car Shows"],
+    "Automotive Reviews": [
+      "Car Reviews",
+      "Motorcycle Reviews",
+      "Dealer Reviews"
+    ],
+    "Maintenance & Repairs": ["Oil Change", "Tire Rotation", "Brake Service"]
+  },
+  "Education": {
+    "Online Learning": [
+      "Online Courses",
+      "Online Degrees",
+      "E-learning Platforms"
+    ],
+    "Schools & Universities": [
+      "Elementary Schools",
+      "High Schools",
+      "Colleges"
+    ],
+    "Educational Tools & Resources": [
+      "Textbooks",
+      "Educational Apps",
+      "Tutoring"
+    ],
+    "Scholarships & Financial Aid": ["Scholarships", "Grants", "Student Loans"]
+  },
+  "Local": {
+    "Local News": ["Local Headlines", "Crime Reports", "School Board Updates"],
+    "Community Events": ["Farmers Markets", "Fairs", "Concerts"],
+    "Local Businesses": ["Restaurants", "Shops", "Service Providers"],
+    "Classified Ads": ["For Sale", "Jobs", "Housing"]
+  },
+  "Career": {
+    "Job Listings": ["Full-Time Jobs", "Part-Time Jobs", "Remote Jobs"],
+    "Career Advice": ["Resume Writing", "Interview Preparation", "Networking"],
+    "Networking": [
+      "Professional Associations",
+      "Networking Events",
+      "Online Networking"
+    ],
+    "Entrepreneurship": [
+      "Starting a Business",
+      "Business Planning",
+      "Marketing"
+    ]
+  },
+  "Wellness": {
+    "Mindfulness & Meditation": [
+      "Meditation Cushions",
+      "Meditation Apps",
+      "Retreats"
+    ],
+    "Yoga": ["Yoga Mats", "Yoga Classes", "Yoga Apparel"],
+    "Alternative Medicine": ["Acupuncture", "Herbal Medicine", "Homeopathy"]
+  },
+  "Sustainability": {
+    "Eco-Friendly Living": [
+      "Reusable Products",
+      "Energy Efficiency",
+      "Waste Reduction"
+    ],
+    "Sustainable Products": [
+      "Eco-Friendly Packaging",
+      "Sustainable Fashion",
+      "Organic Food"
+    ],
+    "Conservation & Recycling": [
+      "Conservation Efforts",
+      "Recycling Centers",
+      "Upcycling Ideas"
+    ]
+  },
+  "Politics & Social Issues": {
+    "Political News": [
+      "Election Coverage",
+      "Legislative Updates",
+      "Political Commentary"
+    ],
+    "Opinions & Editorials": [
+      "Opinion Pieces",
+      "Letters to the Editor",
+      "Editorial Board"
+    ],
+    "Human Rights": ["Equality", "Social Justice", "Humanitarian Efforts"],
+    "Social Movements": ["Activism", "Protests", "Community Organizing"]
+  },
+  "International": {
+    "Global News": ["International Headlines", "Diplomacy", "Global Economy"],
+    "Travel Advisories": [
+      "Safety Alerts",
+      "Travel Restrictions",
+      "Health Advisories"
+    ],
+    "Cultural Insights": [
+      "Cultural Exchanges",
+      "Language Learning",
+      "Global Traditions"
+    ]
+  },
+  "Science & Innovation": {
+    "Scientific Discoveries": [
+      "New Research",
+      "Breakthroughs",
+      "Scientific Journals"
+    ],
+    "Technology Innovations": [
+      "New Gadgets",
+      "Tech Industry News",
+      "Startup Launches"
+    ],
+    "Space Exploration": ["NASA", "SpaceX", "International Space Station"]
+  },
+  "Trending": {
+    "Viral Videos": ["Music Videos", "Comedy Clips", "Inspirational Stories"],
+    "Hot Topics": ["Viral Hashtags", "Twitter Trends", "Reddit Hot Topics"],
+    "Memes": ["Latest Memes", "Meme Creators", "Meme Platforms"],
+    "Social Media Buzz": [
+      "Trending Instagram Posts",
+      "Viral TikTok Videos",
+      "Facebook Trends"
+    ]
+  },
+  "News": {
+    "Top Stories": ["World", "National", "Local"],
+    "Politics": ["Elections", "Legislation", "Political Commentary"],
+    "Business": ["Market Trends", "Corporate News", "Small Business"],
+    "Technology": ["Gadgets", "Internet", "Science"],
+    "Sports": ["Game Highlights", "Player News", "Trade Rumors"],
+    "Health": ["Disease Outbreaks", "Healthcare Policy", "Wellness Trends"],
+    "Entertainment": ["Celebrity", "Movies", "Music"],
+    "Travel": ["Destinations", "Travel Advice", "Industry News"],
+    "Opinion": ["Editorials", "Op-Ed", "Letters to the Editor"]
+  },
+  "Multimedia": {
+    "Video": ["News Clips", "Interviews", "Documentaries"],
+    "Podcasts": ["News", "Interviews", "Storytelling"],
+    "Photo Galleries": ["News", "Sports", "Entertainment"]
+  },
+  "Features": {
+    "Investigative Reporting": ["Long Reads", "In-depth Analysis", "Exposés"],
+    "Profiles": ["Personal Stories", "Interviews", "Success Stories"],
+    "Reviews": ["Product Reviews", "Movie Reviews", "Book Reviews"],
+    "Essays": ["Personal Essays", "Opinion Essays", "Narrative Essays"]
+  },
+  "Community": {
+    "Forums": ["General Discussion", "Help & Advice", "Topic-Specific"],
+    "Local Events": ["Meetups", "Concerts", "Town Halls"],
+    "Classifieds": ["For Sale", "Housing", "Jobs"]
+  },
+  "Services": {
+    "Newsletter": ["Daily", "Weekly", "Topic-Specific"],
+    "Customer Service": ["FAQs", "Contact Us", "Support"],
+    "Advertising": ["Rates", "Audience", "Special Promotions"]
+  },
+  "Resources": {
+    "Guides": ["How-to Guides", "Resource Lists", "Expert Advice"],
+    "Directories": [
+      "Local Businesses",
+      "Service Providers",
+      "Community Organizations"
+    ]
+  }
+}

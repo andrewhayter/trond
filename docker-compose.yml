@@ -1,0 +1,41 @@
+version: '3.0'
+services:
+  application:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: application
+    container_name: application
+    volumes:
+      - ./:/app/
+    networks:
+      - net
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    volumes:
+      - index_data:/chroma/.chroma/index
+    ports:
+      - 8000:8000
+    networks:
+      - net
+
+  vectoradmin:
+    image: mintplex/vector-admin:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - chroma
+    environment:
+      - VECTOR_DB_HOST=chroma
+      - VECTOR_DB_PORT=8000
+    networks:
+      - net
+
+volumes:
+  index_data:
+    driver: local
+
+networks:
+  net:
+    driver: bridge

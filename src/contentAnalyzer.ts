@@ -1,6 +1,9 @@
 import { JSDOM } from 'jsdom';
 import { convert } from 'html-to-text';
 
+// Define a delay function
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function stripLinks(content) {
   // Regular expression to match markdown links
   const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -19,6 +22,25 @@ function stripLinks(content) {
 
   // Replace newline characters with a space
   return content.replace(newlineRegex, ' ');
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+function cleanKeywords(keywords) {
+  // Regular expression to match special characters
+  const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+  return keywords
+    .filter(keyword => keyword.trim() !== '') // Remove empty strings
+    .map(keyword => keyword.trim().toLowerCase()) // Trim whitespace and convert to lowercase for case-insensitive deduplication
+    .filter(keyword => !specialCharRegex.test(keyword)) // Remove keywords with special characters
+    .flatMap(keyword => keyword.split(',')) // Split comma-separated strings
+    .filter((keyword, index, self) => self.indexOf(keyword) === index) // Remove duplicates
+    .map(keyword => toTitleCase(keyword)); // Convert to title case
 }
 
 async function processArticle(article) {
@@ -58,6 +80,15 @@ async function processArticle(article) {
     let structuredData = extractStructuredData(htmlDocument);
     let metadata = extractMetadata(htmlDocument);
 
+    // Extract keywords from structuredData and metadata
+    let keywords = [];
+    if (structuredData && structuredData.keywords) {
+      keywords = keywords.concat(structuredData.keywords);
+    }
+    if (metadata && metadata.keywords) {
+      keywords = keywords.concat(metadata.keywords);
+    }
+
     // Extract social media embeds
     const socialMediaEmbeds = extractSocialMediaEmbeds(htmlDocument);
 
@@ -84,6 +115,7 @@ async function processArticle(article) {
       structuredData,
       analysis,
       socialMediaEmbeds,
+      keywords,
     };
   } catch (error) {
     console.error(`Error processing article: ${article.title}`);
@@ -91,9 +123,6 @@ async function processArticle(article) {
 }
 
 export async function analyzeDocuments(trendsWithContent) {
-  // Define a delay function
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
   // Define a batch size
   const batchSize = 100;
 
@@ -118,6 +147,16 @@ export async function analyzeDocuments(trendsWithContent) {
         const analyzedArticles = await Promise.all(
           trend.articles.map((article) => processArticle(article))
         );
+
+        // Collect keywords from all articles and add to relatedQueries
+        analyzedArticles.forEach((article) => {
+          if (article && article.keywords) {
+            trend.relatedQueries = Array.from(new Set([...trend.relatedQueries, ...article.keywords]));
+          }
+        });
+
+        // Clean up relatedQueries
+        trend.relatedQueries = cleanKeywords(trend.relatedQueries);
 
         trend.articles = analyzedArticles.filter((article) => article !== null);
         return trend;
@@ -145,10 +184,6 @@ function extractMetadata(document) {
       document.querySelector('meta[name="keywords"]')?.content.split(',') || [],
   };
 }
-
-// function sanitizeJSON(jsonString) {
-//   return jsonString.replace(/[\n\r\t]/g, ' ').replace(/\s\s+/g, ' ');
-// }
 
 // Extracts structured data in JSON-LD format if present
 function extractStructuredData(document) {
@@ -317,9 +352,9 @@ function extractSocialMediaEmbeds(document) {
 //     H6: [],
 //   };
 //   for (let i = 1; i <= 6; i++) {
-//     const levelHeadings = document.querySelectorAll(`h${i}`);
+//     const levelHeadings = document.querySelectorAll(`h${ i }`);
 //     levelHeadings.forEach((heading) => {
-//       headings[`H${i}`].push(heading.textContent);
+//       headings[`H${ i }`].push(heading.textContent);
 //     });
 //   }
 //   return headings;
@@ -341,7 +376,7 @@ function extractSocialMediaEmbeds(document) {
 
 //   phrases.forEach((phrase) => {
 //     keywordUsage[phrase] = (
-//       document.body.textContent.match(new RegExp(`\\b${phrase}\\b`, 'g')) || []
+//       document.body.textContent.match(new RegExp(`\\b${ phrase }\\b`, 'g')) || []
 //     ).length;
 //   });
 
